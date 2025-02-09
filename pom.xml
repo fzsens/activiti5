@@ -24,43 +24,6 @@
     <batik.version>1.7</batik.version>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
-
-    <!-- OSGi bundles properties -->
-    <activiti.artifact />
-    <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
-    <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
-    <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
-    <activiti.osgi.import.defaults>
-    </activiti.osgi.import.defaults>
-    <activiti.osgi.import.before.defaults />
-    <activiti.osgi.import.additional />
-    <activiti.osgi.export.additional />
-    <activiti.osgi.import.pkg>
-      org.activiti.*;${activiti.osgi.import.activiti.version},
-      ${activiti.osgi.import.before.defaults},
-      ${activiti.osgi.import.defaults},
-      ${activiti.osgi.import.additional},
-      *
-    </activiti.osgi.import.pkg>
-    <activiti.osgi.activator />
-    <activiti.osgi.failok>false</activiti.osgi.failok>
-    <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
-    <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
-      <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg> -->
-    <activiti.osgi.export.pkg>
-      ${activiti.artifact}*,
-      ${activiti.osgi.export.additional}
-    </activiti.osgi.export.pkg>
-    <activiti.osgi.private.pkg></activiti.osgi.private.pkg>
-    <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
-    <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
-    <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
-    <activiti.osgi.dynamic />
-    <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
-    <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
-    <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
-    <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
-    <activiti.osgi.embed></activiti.osgi.embed>
   </properties>
 
   <dependencyManagement>
@@ -634,7 +597,6 @@
     <module>modules/activiti-image-generator</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
-    <module>demo/spring-webmvc-activiti</module>
   </modules>
 
   <build>
@@ -663,37 +625,7 @@
           <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.1.0</version>
-        <extensions>true</extensions>
-        <configuration>
-          <excludeDependencies>${activiti.osgi.exclude.dependencies}</excludeDependencies>
-          <instructions>
-            <Bundle-Name>${project.name}</Bundle-Name>
-            <Bundle-SymbolicName>${activiti.osgi.symbolic.name}</Bundle-SymbolicName>
-            <Bundle-Activator>${activiti.osgi.activator}</Bundle-Activator>
-            <Export-Package>${activiti.osgi.export}</Export-Package>
-            <Import-Package>org.activiti.osgi;resolution:=optional,
-              ${activiti.osgi.import}</Import-Package>
-            <DynamicImport-Package>${activiti.osgi.dynamic}</DynamicImport-Package>
-            <Private-Package>${activiti.osgi.private.pkg}</Private-Package>
-            <Implementation-Title>Activiti</Implementation-Title>
-            <Implementation-Version>${project.version}</Implementation-Version>
-            <Include-Resource>${activiti.osgi.include.resource}</Include-Resource>
-            <_versionpolicy>${activiti.osgi.import.default.version}</_versionpolicy>
-            <_removeheaders>${activiti.osgi.remove.headers}</_removeheaders>
-            <_failok>${activiti.osgi.failok}</_failok>
-            <Export-Service>${activiti.osgi.export.service}</Export-Service>
-            <Import-Service>${activiti.osgi.import.service}</Import-Service>
-            <Embed-Dependency>${activiti.osgi.embed}</Embed-Dependency>
-          </instructions>
-          <versions>
-            <activiti.osgi.version.clean>${project.version}</activiti.osgi.version.clean>
-          </versions>
-        </configuration>
-      </plugin>
+
     </plugins>
     <pluginManagement>
       <plugins>
@@ -720,9 +652,6 @@
                       <goal>manifest</goal>
                     </goals>
                   </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
                 </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
@@ -735,7 +664,6 @@
           <configuration>
             <mavenExecutorId>forked-path</mavenExecutorId>
             <useReleaseProfile>false</useReleaseProfile>
-            <arguments>${arguments} -Psonatype-oss-release</arguments>
           </configuration>
         </plugin>
       </plugins>
@@ -774,7 +702,6 @@
         <module>modules/activiti-mule</module>
         <module>modules/activiti-camel</module>
         <module>modules/activiti-cdi</module>
-        <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
         <module>modules/activiti-crystalball</module>
@@ -803,21 +730,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
               </execution>
             </executions>
           </plugin>
@@ -893,7 +806,7 @@
     <profile>
       <id>checkosgi</id>
       <modules>
-        <module>modules/activiti-osgi</module>
+<!--        <module>moduleodules/activiti-osgi</module>-->
       </modules>
     </profile>
     <profile>
@@ -930,7 +843,6 @@
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-osgi</module>
         <module>modules/activiti-camel</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-cdi</module>
@@ -951,7 +863,6 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
 					</execution>
 				</executions>
@@ -996,19 +907,6 @@
       </properties>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>jrebel-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-rebel-xml</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
         </plugins>
       </build>
     </profile>
@@ -1033,19 +931,7 @@
       </properties>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>jrebel-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-rebel-xml</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
+
         </plugins>
       </build>
     </profile>

@@ -20,8 +20,14 @@ package org.activiti.engine;
  */
 public interface EngineServices {
 
+  /**
+   * @return define and deploy service
+   */
   RepositoryService getRepositoryService();
-  
+
+  /**
+   * @return flow instance service . start process and get process instance
+   */
   RuntimeService getRuntimeService();
   
   FormService getFormService();

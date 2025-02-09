@@ -101,7 +101,7 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-layout</artifactId>
-      <scope>test</scope>
+<!--      <scope>test</scope>-->
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

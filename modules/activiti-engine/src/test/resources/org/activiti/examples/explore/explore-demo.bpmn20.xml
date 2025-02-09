@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+   <process id="hello" name="hello" isExecutable="true">
+        <!-- 流程开始节点 -->
+        <startEvent id="start" name="Start" ></startEvent>
+        <!-- serviceTask：执行me.likeyao.activiti.demo.HelloWorld的execute方法，打印hello world -->
+        <serviceTask id="helloworld" name="helloworld" activiti:class="org.activiti.examples.explore.HelloWorld"/>
+        <!-- 流程结束节点 -->
+        <endEvent id="end" name="End"></endEvent>
+        <!-- 流程迁移线：开始节点到serviceTask节点 -->
+        <sequenceFlow id="sid-1" sourceRef="start" targetRef="helloworld"></sequenceFlow>
+        <!-- 流程迁移线：serviceTask节点到结束节点 -->
+        <sequenceFlow id="sid-3" sourceRef="helloworld" targetRef="end"></sequenceFlow>
+    </process>
+</definitions>
