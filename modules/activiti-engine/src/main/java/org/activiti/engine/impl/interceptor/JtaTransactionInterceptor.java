@@ -42,6 +42,13 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
     this.transactionManager = transactionManager;
   }
 
+  /**
+   * 使用 java 的 transaction 管理器进行事务管理，底层以来具体实现
+   * @param config
+   * @param command
+   * @return
+   * @param <T>
+   */
   public <T> T execute(CommandConfig config, Command<T> command) {
     LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
 

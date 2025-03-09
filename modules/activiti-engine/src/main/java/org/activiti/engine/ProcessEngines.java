@@ -54,6 +54,8 @@ import org.slf4j.LoggerFactory;
  * The {@link #init()} method will try to build one {@link ProcessEngine} for 
  * each activiti.cfg.xml file found on the classpath.  If you have more then one,
  * make sure you specify different process.engine.name values.
+ *
+ * 启动帮助类，全部为静态方法，用于 ProcessEngine 的初始化、启动等工作入口
  *  
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -82,6 +84,8 @@ public abstract class ProcessEngines {
       ClassLoader classLoader = ReflectUtil.getClassLoader();
       Enumeration<URL> resources = null;
       try {
+        // 配置文件位置，activiti 也属于是 spring 绑定
+        // 7.0 版本的 camunda 也是保留这个逻辑
         resources = classLoader.getResources("activiti.cfg.xml");
       } catch (IOException e) {
         throw new ActivitiIllegalArgumentException("problem retrieving activiti.cfg.xml resources on the classpath: "+System.getProperty("java.class.path"), e);
@@ -115,6 +119,10 @@ public abstract class ProcessEngines {
     }
   }
 
+  /**
+   * 使用 spring 的初始化方式，巧妙利用反射来做依赖隔离
+   * @param resource
+   */
   protected static void initProcessEngineFromSpringResource(URL resource) {
     try {
       Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
@@ -150,6 +158,7 @@ public abstract class ProcessEngines {
   private static ProcessEngineInfo initProcessEnginFromResource(URL resourceUrl) {
     ProcessEngineInfo processEngineInfo = processEngineInfosByResourceUrl.get(resourceUrl.toString());
     // if there is an existing process engine info
+    // 重复初始化时候处理
     if (processEngineInfo!=null) {
       // remove that process engine from the member fields
       processEngineInfos.remove(processEngineInfo);
@@ -217,7 +226,8 @@ public abstract class ProcessEngines {
     return getProcessEngine(NAME_DEFAULT);
   }
 
-  /** obtain a process engine by name.  
+  /** obtain a process engine by name.
+   * 懒加载模式，等到读取的时候进行初始化
    * @param processEngineName is the name of the process engine or null for the default process engine.  */
   public static ProcessEngine getProcessEngine(String processEngineName) {
     if (!isInitialized()) {

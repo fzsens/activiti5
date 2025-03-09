@@ -18,6 +18,9 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 /**
  * Implementations of this class can be plugged into a {@link ProcessEngineConfigurationImpl}.
  * Such implementations can configure the engine in any way programmatically possible.
+ *
+ * 是 ProcessEngine 的配置可扩展插件，通过配置 Configurator 可以在 ProcessEngine 初始化的前后对 ProcessEngineConfiguration 的配置项
+ * 进行干预，典型的增加 JMX 暴露，比如修改 jdbc 的地址、增加 ldap 支持单点登录
  * 
  * @author Joram Barrez
  */

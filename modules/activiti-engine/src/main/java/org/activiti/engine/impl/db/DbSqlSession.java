@@ -68,6 +68,8 @@ import org.slf4j.LoggerFactory;
  *   - delayed flushing of inserts updates and deletes
  *   - optional dirty checking
  *   - db specific statement name mapping
+ *
+ *  与数据库相关的操作都在此处
  *   
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -1401,6 +1403,9 @@ public class DbSqlSession implements Session {
   }
   
   public void performSchemaOperationsProcessEngineBuild() {
+    /**
+     * Context 通过拦截器实现了初始化
+     */
     String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
     if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
       try {

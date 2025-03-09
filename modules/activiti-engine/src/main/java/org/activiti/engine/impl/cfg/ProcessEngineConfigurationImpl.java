@@ -248,6 +248,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
+ * 这个类是整个 Activiti 配置、启动的核心
+ *
  * @author Tom Baeyens
  * @author Joram Barrez
  */
@@ -607,47 +609,126 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected ObjectMapper objectMapper = new ObjectMapper();
   
   // buildProcessEngine ///////////////////////////////////////////////////////
-  
+
+  /**
+   * 实现 ProcessEngine 的初始化
+   * @return
+   */
   public ProcessEngine buildProcessEngine() {
+    /**
+     * 先初始化配置类
+     */
     init();
+    /**
+     * 初始化 ProcessEngine
+     */
     return new ProcessEngineImpl(this);
   }
   
   // init /////////////////////////////////////////////////////////////////////
-  
+
+  /**
+   * 核心初始化方法
+   */
   protected void init() {
+    /**
+     * 实例化前后配置干预，服务可扩展行
+     */
   	initConfigurators();
   	configuratorsBeforeInit();
+    /**
+     * 绘图器
+     */
     initProcessDiagramGenerator();
+    /**
+     * 历史记录归档基本，默认为 AUDIT
+     */
     initHistoryLevel();
+    /**
+     * 表达式管理器
+     */
     initExpressionManager();
+    /**
+     * 数据源
+     */
     initDataSource();
+    /**
+     * 初始化变量类型
+     */
     initVariableTypes();
+    /**
+     * 注入的 beans，前面通过注入 BeanFactory 代理来巧妙实现
+     */
     initBeans();
+    /**
+     * 初始化表单引擎
+     */
     initFormEngines();
     initFormTypes();
     initScriptingEngines();
+    /**
+     * 日期相关
+     */
     initClock();
     initBusinessCalendarManager();
+    /**
+     * 事务上下文创建工厂
+     * 如果要在上下文中增加一些内容，可以自己进行实现
+     */
     initCommandContextFactory();
     initTransactionContextFactory();
+    /**
+     * Activiti 采用的 CQRS 架构，核心的逻辑在 Command 的执行器中
+     */
     initCommandExecutors();
+    /**
+     * 初始化各个 Service
+     */
     initServices();
     initIdGenerator();
     initDeployers();
+    /**
+     * 定时器处理类
+     */
     initJobHandlers();
+    /**
+     * 初始化定时任务执行器
+     */
     initJobExecutor();
     initAsyncExecutor();
+    /**
+     * 事务和 sql session
+     */
     initTransactionFactory();
     initSqlSessionFactory();
     initSessionFactories();
+    /**
+     * 思考一下，是如何处理事务的
+     * 1. 思路一，使用 TransactionStatus 在各个任务中传递参数
+     * 2. 思路二，将任务放在一个 TransationTemplatle 中一起处理
+     */
     initJpa();
+    /**
+     * 负责处理拦截器默认实现类（拦截监听器或者表达式）
+     */
     initDelegateInterceptor();
+    /**
+     * 初始化事件处理类
+     */
     initEventHandlers();
     initFailedJobCommandFactory();
+    /**
+     * 处理事件转发
+     */
     initEventDispatcher();
+    /**
+     * 流程验证器
+     */
     initProcessValidator();
     initDatabaseEventLogging();
+    /**
+     * 初始化后配置项干预，post-init
+     */
     configuratorsAfterInit();
   }
 
@@ -662,9 +743,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // command executors ////////////////////////////////////////////////////////
   
   protected void initCommandExecutors() {
+    /*
+     * 默认的命令执行参数
+     */
     initDefaultCommandConfig();
+    /*
+     * 初始化Schema 执行时候的命令上下文
+     */
     initSchemaCommandConfig();
+    /**
+     * 初始化命令调用器
+     * CommandInvoker 本身也是一个 CommandInterceptor 是整个Command调用拦截链的最后一个 CommandInterceptor
+     */
     initCommandInvoker();
+    /**
+     * 初始化 Command 的拦截器
+     */
     initCommandInterceptors();
     initCommandExecutor();
   }
@@ -686,30 +780,56 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       commandInvoker = new CommandInvoker();
     }
   }
-  
+
+  /**
+   * 构建顺序（调用顺序从上到下）
+   * 1. customPreCommandInterceptors
+   * 2. 系统默认Interceptors
+   *    2.1. 日志 Interceptor
+   *    2.2. 事务 Interceptor
+   *    2.3. 上下文构建、移除 Interceptor
+   * 3. customPostCommandInterceptors
+   * 4. commandInvoker
+   */
   protected void initCommandInterceptors() {
     if (commandInterceptors==null) {
       commandInterceptors = new ArrayList<CommandInterceptor>();
       if (customPreCommandInterceptors!=null) {
         commandInterceptors.addAll(customPreCommandInterceptors);
       }
+      /**
+       * 添加默认 interceptor
+       */
       commandInterceptors.addAll(getDefaultCommandInterceptors());
       if (customPostCommandInterceptors!=null) {
         commandInterceptors.addAll(customPostCommandInterceptors);
       }
+      /**
+       * 添加 invoker
+       */
       commandInterceptors.add(commandInvoker);
     }
   }
 
+  /**
+   * 1. 日志 Interceptor
+   * 2. 事务 Interceptor
+   * 3. 上下文构建、移除 Interceptor
+   */
   protected Collection< ? extends CommandInterceptor> getDefaultCommandInterceptors() {
     List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
     interceptors.add(new LogInterceptor());
-    
+
+    /**
+     * 默认的 Standalone 模式是 null
+     */
     CommandInterceptor transactionInterceptor = createTransactionInterceptor();
     if (transactionInterceptor != null) {
       interceptors.add(transactionInterceptor);
     }
-    
+    /**
+     * 命令上下文创建和销毁的 interceptor
+     */
     interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
     return interceptors;
   }
@@ -721,13 +841,36 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  /**
+   * 构建顺序（调用顺序从上到下）
+   * 1. customPreCommandInterceptors
+   * 2. 系统默认Interceptors
+   *    2.1. 日志 Interceptor
+   *    2.2. 事务 Interceptor
+   *    2.3. 上下文构建、移除 Interceptor
+   * 3. customPostCommandInterceptors
+   * 4. commandInvoker
+   *
+   * 从 2.3 - 4 可以拿到 Context.getContext;
+   * 1 - 2.2 无法拿到 context
+   *
+   * @param chain
+   * @return
+   */
   protected CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
     if (chain==null || chain.isEmpty()) {
       throw new ActivitiException("invalid command interceptor chain configuration: "+chain);
     }
+    /**
+     * 按照顺序构建调用链
+     * 1.
+     */
     for (int i = 0; i < chain.size()-1; i++) {
       chain.get(i).setNext( chain.get(i+1) );
     }
+    /**
+     * 返回第一个调用 interceptor
+     */
     return chain.get(0);
   }
   
@@ -890,6 +1033,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  /**
+   * 采用编程式方法，初始化 mybatis
+   */
   protected void initSqlSessionFactory() {
     if (sqlSessionFactory==null) {
       InputStream inputStream = null;
@@ -907,6 +1053,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
         properties.put("wildcardEscapeClause", wildcardEscapeClause);
         if(databaseType != null) {
+          /**
+           * 不同类型的 db，分页、排序等逻辑不同
+           * 比如 oracle 的分页基于 rownum，所以在 limitBefore 中增加配置
+           * 对比 mybatis 的 limitBefore 则为空字符串
+           */
           properties.put("limitBefore" , DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
           properties.put("limitAfter" , DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
           properties.put("limitBetween" , DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
@@ -914,7 +1065,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           properties.put("orderBy" , DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
           properties.put("limitBeforeNativeQuery" , ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
         }
-        
+        /**
+         * 作为参数传递给 mybatis，mybatis 的配置文件中，应用对应 snippet 就可以使用对应的参数
+         */
         Configuration configuration = initMybatisConfiguration(environment, reader, properties);
         sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
 
@@ -1054,7 +1207,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected void addSessionFactory(SessionFactory sessionFactory) {
     sessionFactories.put(sessionFactory.getSessionType(), sessionFactory);
   }
-  
+
+  /**
+   * 允许使用方，通过编码方式在初始化前后干预配置项目，从而对 ProcessEngine 进行扩展
+   */
   protected void initConfigurators() {
   	
   	allConfigurators = new ArrayList<ProcessEngineConfigurator>();
@@ -1072,7 +1228,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     	if (classLoader == null) {
     		classLoader = ReflectUtil.getClassLoader();
     	}
-    	
+       /*
+       * SPI 扩展
+       */
     	ServiceLoader<ProcessEngineConfigurator> configuratorServiceLoader
     			= ServiceLoader.load(ProcessEngineConfigurator.class, classLoader);
     	int nrOfServiceLoadedConfigurators = 0;
@@ -1113,7 +1271,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     	
     }
   }
-  
+
+  /**
+   * 初始化前干预
+   */
   protected void configuratorsBeforeInit() {
   	for (ProcessEngineConfigurator configurator : allConfigurators) {
   		log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());

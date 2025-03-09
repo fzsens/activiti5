@@ -62,6 +62,9 @@ import org.slf4j.LoggerFactory;
  * License, see http://www.famfamfam.com/lab/icons/silk/
  * 
  * @see org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator
+ *
+ * BPMN 元素的绘制，这是一个了不起的实现，现在熟悉 awt 的人很少了
+ *
  * @author Joram Barrez
  */
 public class DefaultProcessDiagramCanvas {

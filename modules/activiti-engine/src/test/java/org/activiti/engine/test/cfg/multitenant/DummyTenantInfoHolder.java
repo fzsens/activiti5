@@ -21,20 +21,27 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.identity.Authentication;
 
 /**
+ * 多租户 Holder
  * @author Joram Barrez
  */
 public class DummyTenantInfoHolder implements TenantInfoHolder {
   
   protected Map<String, List<String>> tenantToUserMapping = new HashMap<String, List<String>>();
   protected Map<String, String> userToTenantMapping = new HashMap<String, String>();
-  
+
+  /**
+   * 当前租户
+   */
   protected ThreadLocal<String> currentUserId = new ThreadLocal<String>();
   protected ThreadLocal<String> currentTenantId = new ThreadLocal<String>();
   
   public Collection<String> getAllTenants() {
     return tenantToUserMapping.keySet();
   }
-  
+
+  /**
+   * 线程上下文变量存储当前用户信息
+   */
   public void setCurrentUserId(String userId) {
     currentUserId.set(userId);
     currentTenantId.set(userToTenantMapping.get(userId));

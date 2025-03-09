@@ -4,6 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <!--Spring风格的配置，增加更多的 Spring 基建支持-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
@@ -11,6 +12,7 @@
         <property name="password" value=""/>
     </bean>
 
+    <!--事务托管-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>

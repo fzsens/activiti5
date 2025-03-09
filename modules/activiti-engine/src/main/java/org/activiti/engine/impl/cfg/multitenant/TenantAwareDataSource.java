@@ -39,6 +39,9 @@ import org.activiti.engine.ActivitiException;
 public class TenantAwareDataSource implements DataSource {
   
   protected TenantInfoHolder tenantInfoHolder;
+  /**
+   * 租户分 DataSource 模式，实现比较简单
+   */
   protected Map<Object, DataSource> dataSources = new HashMap<Object, DataSource>();
   
   public TenantAwareDataSource(TenantInfoHolder tenantInfoHolder) {

@@ -29,6 +29,7 @@
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="jobExecutorActivate" value="false" />
+		<!--插入配置干预项-->
 		<property name="configurators">
 		  <list>
 		      <bean class="org.activiti.ldap.LDAPConfigurator">

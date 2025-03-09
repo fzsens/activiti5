@@ -22,6 +22,8 @@ import org.springframework.beans.factory.BeanFactory;
 
 
 /**
+ * 又是一个好用的编程技巧
+ * 使用 Map 来抽象，实际实现为 Spring 的 BeanFactory
  * @author Tom Baeyens
  */
 public class SpringBeanFactoryProxyMap implements Map<Object, Object> {

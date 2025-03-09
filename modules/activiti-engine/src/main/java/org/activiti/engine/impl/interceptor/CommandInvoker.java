@@ -15,6 +15,8 @@ package org.activiti.engine.impl.interceptor;
 import org.activiti.engine.impl.context.Context;
 
 /**
+ * Invoker 是调用链的最后一个拦截器（执行器）
+ * 也就是 Command 最后执行的地方，所以命名为 Invoker
  * @author Tom Baeyens
  */
 public class CommandInvoker extends AbstractCommandInterceptor {

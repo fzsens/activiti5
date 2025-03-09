@@ -78,7 +78,14 @@ import org.activiti.image.ProcessDiagramGenerator;
  *   .buildProcessEngine();
  * </pre>
  * </p>
- * 
+ *
+ * 定义流程引擎配置项目
+ * 存在一个疑问，就是为什么 ProcessEngineConfiguration 和 ProcessEngineImpl 都要实现 EngineServices?
+ * 1. 作者使用的是一种责任分离的模型，也就是 EngineServices 定义了核心的服务
+ * 2. ProcessEngineImpl 是使用方，核心的逻辑是读取
+ * 3. ProcessEngineConfiguration 是配置初始化方，核心的逻辑是构建
+ * 4. 如果设计CQRS架构，是否可以进行一定程度的参考呢？
+ *
  * @see ProcessEngines 
  * @author Tom Baeyens
  */
@@ -171,7 +178,9 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * <strong>NOTE: the prefix is not respected by automatic database schema management. If you use 
    * {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_CREATE_DROP} 
    * or {@link ProcessEngineConfiguration#DB_SCHEMA_UPDATE_TRUE}, activiti will create the database tables 
-   * using the default names, regardless of the prefix configured here.</strong>  
+   * using the default names, regardless of the prefix configured here.</strong>
+   *
+   * 最佳实践：进行线上和预发环境的隔离
    * 
    * @since 5.9
    */
@@ -243,7 +252,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromResource(String resource, String beanName) {
     return BeansConfigurationHelper.parseProcessEngineConfigurationFromResource(resource, beanName);
   }
-  
+
+  /**
+   * 创建 ProcessEngineConfiguration 配置
+   * @param inputStream
+   * @return
+   */
   public static ProcessEngineConfiguration createProcessEngineConfigurationFromInputStream(InputStream inputStream) {
     return createProcessEngineConfigurationFromInputStream(inputStream, "processEngineConfiguration");
   }

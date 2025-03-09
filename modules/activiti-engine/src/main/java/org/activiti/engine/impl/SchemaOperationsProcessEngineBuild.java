@@ -21,6 +21,11 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public final class SchemaOperationsProcessEngineBuild implements Command<Object> {
 
+  /**
+   * 执行数据库创建、删除、更新操作
+   * @param commandContext
+   * @return
+   */
   public Object execute(CommandContext commandContext) {
     commandContext
       .getSession(DbSqlSession.class)

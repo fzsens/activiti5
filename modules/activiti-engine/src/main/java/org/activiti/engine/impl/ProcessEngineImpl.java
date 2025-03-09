@@ -60,6 +60,10 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected TransactionContextFactory transactionContextFactory;
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
+  /**
+   * ProcessEngineImpl 中的服务，都是通过 ProcessEngineConfigurationImpl 来进行初始化的
+   * @param processEngineConfiguration
+   */
   public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.processEngineConfiguration = processEngineConfiguration;
     this.name = processEngineConfiguration.getProcessEngineName();
@@ -76,7 +80,10 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
-    
+
+    /**
+     * 执行第一个命令，初始化db
+     */
     commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
 
     if (name == null) {
@@ -84,7 +91,10 @@ public class ProcessEngineImpl implements ProcessEngine {
     } else {
       log.info("ProcessEngine {} created", name);
     }
-    
+
+    /**
+     * 完成注册
+     */
     ProcessEngines.registerProcessEngine(this);
 
     if (jobExecutor != null && jobExecutor.isAutoActivate()) {
@@ -98,11 +108,17 @@ public class ProcessEngineImpl implements ProcessEngine {
     if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
     }
-    
+
+    /**
+     * 发送事件
+     */
     processEngineConfiguration.getEventDispatcher().dispatchEvent(
     		ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
   }
-  
+
+  /**
+   * 引擎关闭
+   */
   public void close() {
     ProcessEngines.unregister(this);
     if (jobExecutor != null && jobExecutor.isActive()) {

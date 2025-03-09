@@ -109,7 +109,10 @@ public class CommandContext {
     this.command = command;
     this.processEngineConfiguration = processEngineConfiguration;
     this.failedJobCommandFactory = processEngineConfiguration.getFailedJobCommandFactory();
-    sessionFactories = processEngineConfiguration.getSessionFactories();
+    /*
+     * db 会话工厂
+     */
+    this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContext = processEngineConfiguration
       .getTransactionContextFactory()
       .openTransactionContext(this);
@@ -249,6 +252,12 @@ public class CommandContext {
   	return null;
   }
 
+  /**
+   * 近似于 Session 缓冲池
+   * @param sessionClass
+   * @return
+   * @param <T>
+   */
   @SuppressWarnings({"unchecked"})
   public <T> T getSession(Class<T> sessionClass) {
     Session session = sessions.get(sessionClass);

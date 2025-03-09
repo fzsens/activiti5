@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
 /**
  * An {@link AsyncExecutor} that has one {@link AsyncExecutor} per tenant.
  * So each tenant has its own acquiring threads and it's own threadpool for executing jobs.
+ *
+ * 多租户线程池实现，在大量使用线程池的业务场景中，可以参考实现，避免出现个别的业务占用大量资源的情况
  * 
  * @author Joram Barrez
  */

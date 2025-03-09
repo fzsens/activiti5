@@ -13,6 +13,11 @@
 package org.activiti.engine.impl.interceptor;
 
 /**
+ *
+ * Activiti 核心执行器
+ * Activiti 采用 CQRS 架构，所有非查询逻辑都是通过 CommandExecutor 来实现的
+ * 内部通过给予 CommandInterceptor 的拦截器来实现
+ *
  * The command executor for internal usage.
  * 
  * @author Tom Baeyens

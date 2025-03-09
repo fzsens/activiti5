@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Class capable of dispatching events.
- * 
+ * 分发事件
  * @author Frederik Heremans
  */
 public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {

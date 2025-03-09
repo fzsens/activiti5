@@ -6,6 +6,8 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
+ * 命令执行器实现，调用拦截链的第一个 interceptor
+ *
  * Command executor that passes commands to the first interceptor in the chain.
  * If no {@link CommandConfig} is passed, the default configuration will be used.  
  * 

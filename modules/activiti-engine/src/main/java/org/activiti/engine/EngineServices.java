@@ -29,15 +29,27 @@ public interface EngineServices {
    * @return flow instance service . start process and get process instance
    */
   RuntimeService getRuntimeService();
-  
+
+  /**
+   * 流程表单的方法
+   * @return
+   */
   FormService getFormService();
-  
+
+  /**
+   * 操作任务的方法：完成、挂起、激活、添加处理人
+   * @return
+   */
   TaskService getTaskService();
   
   HistoryService getHistoryService();
   
   IdentityService getIdentityService();
-  
+
+  /**
+   * 元数据管理
+   * @return
+   */
   ManagementService getManagementService();
   
   DynamicBpmnService getDynamicBpmnService();
