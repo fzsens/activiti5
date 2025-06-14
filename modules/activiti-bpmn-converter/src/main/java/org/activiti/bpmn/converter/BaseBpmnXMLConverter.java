@@ -59,6 +59,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 采用 stax 对 xml 进行解析
+ *
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
@@ -224,7 +226,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   }
   
   protected abstract Class<? extends BaseElement> getBpmnElementType();
-  
+
+  /**
+   * 模板方法
+   * 不同的 process 子元素会定义不同的解析类型
+   * @param xtr
+   * @param model
+   * @return
+   * @throws Exception
+   */
   protected abstract BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception;
   
   protected abstract String getXMLElementName();
@@ -238,7 +248,15 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
   protected abstract void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception;
   
   // To BpmnModel converter convenience methods
-  
+
+  /**
+   * 通用的子元素处理
+   * @param elementName
+   * @param parentElement
+   * @param model
+   * @param xtr
+   * @throws Exception
+   */
   protected void parseChildElements(String elementName, BaseElement parentElement, BpmnModel model, XMLStreamReader xtr) throws Exception {
     parseChildElements(elementName, parentElement, null, model, xtr);
   }

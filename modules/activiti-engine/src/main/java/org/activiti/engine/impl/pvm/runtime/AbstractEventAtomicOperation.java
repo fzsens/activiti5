@@ -52,7 +52,7 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
       execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
-      
+      // 通知下一个节点
       eventNotificationsCompleted(execution);
     }
   }

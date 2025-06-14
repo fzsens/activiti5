@@ -12,7 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Joram Barrez
  */
 public interface EventLoggerEventHandler {
-	
+
+	/**
+	 * 日志系列的 EventHandler 核心方法是长生 EventLogEntryEntity
+	 */
 	EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);
 	
 	void setEvent(ActivitiEvent event);

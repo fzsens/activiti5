@@ -62,7 +62,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(), processInstanceBuilder.getTenantId());
     this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
   }
-  
+
+  /**
+   * 基本的套路，在 Cmd 中包含所有的处理逻辑
+   * 1. 从 Context 中获取处理的 Manager 类用于数据层的管理
+   * 2. 调用执行逻辑
+   * @param commandContext
+   * @return
+   */
   public ProcessInstance execute(CommandContext commandContext) {
     DeploymentManager deploymentManager = commandContext
       .getProcessEngineConfiguration()

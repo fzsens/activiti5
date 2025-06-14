@@ -52,6 +52,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   private static Map<String, BaseChildElementParser> genericChildParserMap = new HashMap<String, BaseChildElementParser>();
   
   static {
+    /**
+     * 子元素解析，类似 UserTask ServiceTask等可以定义子元素
+     */
     addGenericParser(new ActivitiEventListenerParser());
     addGenericParser(new CancelEventDefinitionParser());
     addGenericParser(new CompensateEventDefinitionParser());
@@ -98,7 +101,16 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, BpmnModel model) throws Exception {
     parseChildElements(elementName, parentElement, xtr, null, model); 
   }
-  
+
+  /**
+   * 解析子元素，也是使用策略模式
+   * @param elementName
+   * @param parentElement
+   * @param xtr
+   * @param childParsers
+   * @param model
+   * @throws Exception
+   */
   public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, 
       Map<String, BaseChildElementParser> childParsers, BpmnModel model) throws Exception {
     
@@ -123,6 +135,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
             parentElement.addExtensionElement(extensionElement);
             continue;
           }
+          // 执行解析
           localParserMap.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
         } else if (inExtensionElements) {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);

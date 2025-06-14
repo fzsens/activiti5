@@ -15,6 +15,10 @@ package org.activiti.engine.impl.pvm.runtime;
 
 
 /**
+ * 定义操作的动作
+ * 1. 可以参考用在业务代码的分节点和分操作处理上
+ *  比如，将一个业务商品发布分成（ContextBuildOperation、CheckOperation、PreSubmitOperation、SubmitOperation、PostSubmitOperation）
+ * 2. 通过对 Operation 的自定义管理来实现复杂业务的控制
  * @author Tom Baeyens
  * @author Daniel Meyer
  */

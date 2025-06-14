@@ -879,6 +879,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // services /////////////////////////////////////////////////////////////////
   
   protected void initServices() {
+    /**
+     * 添加Command执行器
+     */
     initService(repositoryService);
     initService(runtimeService);
     initService(historyService);
@@ -1348,6 +1351,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
+  /**
+   * 创建部署器
+   * 1. 初始化 BpmnParser ->
+   *     bpmnParser.setExpressionManager(expressionManager);
+   *     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
+   *     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
+   *     bpmnParser.setListenerFactory(listenerFactory);
+   * 2. 初始化 BpmnDeployer
+   *     bpmnDeployer.setBpmnParser(bpmnParser);
+   *
+   * 职责分离：如何做到，通过代码重构，和合理的责任划分来做到，思考过程
+   * 1. 执行部署的工具叫作 Deployer
+   * 2. 执行部署的工具需要对 Bpmn 文件进行解析
+   * 3. 解析的工具定义为 BpmnParser
+   * 4. BpmnParser 需要处理各种类型的 XML 到 Activiti 模型的转换，并且支持可扩展
+   * 5. 扩展使用工厂类接口来实现
+   *  5.1 定义各类工厂类接口，用于实现模型的创建
+   *  5.2 在 ProcessEngineConfiguration 中预留参数入口
+   * @return
+   */
   protected Collection< ? extends Deployer> getDefaultDeployers() {
     List<Deployer> defaultDeployers = new ArrayList<Deployer>();
 
@@ -1383,12 +1406,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (bpmnParser == null) {
       bpmnParser = new BpmnParser();
     }
-    
+    /**
+     * 设置解析必须的参数
+     */
     bpmnParser.setExpressionManager(expressionManager);
     bpmnParser.setBpmnParseFactory(bpmnParseFactory);
     bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
     bpmnParser.setListenerFactory(listenerFactory);
-    
+
+    /**
+     * 每个类型的解析扩展点
+     */
     List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
     if(getPreBpmnParseHandlers() != null) {
       parseHandlers.addAll(getPreBpmnParseHandlers());
@@ -1817,14 +1845,19 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       beans = new HashMap<Object, Object>();
     }
   }
-  
+
+  /**
+   * 初始化事件分发器
+   */
   protected void initEventDispatcher() {
   	if(this.eventDispatcher == null) {
   		this.eventDispatcher = new ActivitiEventDispatcherImpl();
   	}
   	
   	this.eventDispatcher.setEnabled(enableEventDispatcher);
-  	
+    /**
+     * 添加事件监听器
+     */
   	if(eventListeners != null) {
   		for(ActivitiEventListener listenerToAdd : eventListeners) {
   			this.eventDispatcher.addEventListener(listenerToAdd);

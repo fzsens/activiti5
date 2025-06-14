@@ -635,7 +635,11 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
     return true;
   }
-  
+
+  /**
+   * 关键方法，用于执行每个流程的节点
+   * @param executionOperation
+   */
   public void performOperation(AtomicOperation executionOperation) {
     if (executionOperation.isAsync(this)) {
       scheduleAtomicOperationAsync(executionOperation);

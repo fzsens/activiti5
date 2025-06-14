@@ -72,6 +72,7 @@ public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLo
 		}
 
 		try {
+			// data 使用 json 格式存储
 			eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
 		} catch (Exception e) {
 			logger.warn("Could not serialize event data. Data will not be written to the database", e);

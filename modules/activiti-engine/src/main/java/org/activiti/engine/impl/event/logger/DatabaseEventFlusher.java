@@ -15,6 +15,9 @@ public class DatabaseEventFlusher extends AbstractEventFlusher {
 	
 	@Override
 	public void closing(CommandContext commandContext) {
+		/*
+		 * 写入db
+		 */
 		EventLogEntryEntityManager eventLogEntryEntityManager = commandContext.getEventLogEntryEntityManager();
 		for (EventLoggerEventHandler eventHandler : eventHandlers) {
 			try {

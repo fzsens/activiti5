@@ -82,7 +82,11 @@ public class CommandContext {
 	protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
 
-  
+  /**
+   * 执行各个流程节点
+   * @param executionOperation
+   * @param execution
+   */
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
     if (nextOperations.size()==1) {

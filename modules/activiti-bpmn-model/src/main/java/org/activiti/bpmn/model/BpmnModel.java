@@ -22,6 +22,12 @@ import org.apache.commons.lang3.StringUtils;
 
 
 /**
+ * Activiti 的核心模型
+ *
+ * 从 json/xml 到 bpmn可以以此为中间模型
+ * 1. 对于 json 解析更加容易
+ * 2. xml 的格式化更加严格，但是解析的复杂度更高
+ *
  * @author Tijs Rademakers
  */
 public class BpmnModel {

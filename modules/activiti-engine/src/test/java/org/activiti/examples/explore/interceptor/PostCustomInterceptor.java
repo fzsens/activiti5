@@ -10,9 +10,9 @@ public class PostCustomInterceptor extends AbstractCommandInterceptor {
     @Override
     public <T> T execute(CommandConfig config, Command<T> command) {
 
-        CommandContext commandContext = Context.getCommandContext();
+        //CommandContext commandContext = Context.getCommandContext();
 
-        assert commandContext != null;
+        //assert commandContext != null;
         next.execute(config,command);
         return null;
     }

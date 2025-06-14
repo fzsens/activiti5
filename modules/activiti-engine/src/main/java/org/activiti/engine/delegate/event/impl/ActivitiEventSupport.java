@@ -75,6 +75,10 @@ public class ActivitiEventSupport {
 		}
 	}
 
+	/**
+	 * 事件处理
+	 * @param event
+	 */
 	public void dispatchEvent(ActivitiEvent event) {
 		if (event == null) {
 			throw new ActivitiIllegalArgumentException("Event cannot be null.");

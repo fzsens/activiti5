@@ -8,10 +8,13 @@
 
   <bean id="testPost" class="org.activiti.examples.explore.interceptor.PostCustomInterceptor" />
 
+  <bean id="idGenerator" class="org.activiti.engine.impl.persistence.StrongUuidGenerator" />
+
   <!--核心配置-->
   <bean id="processEngineConfiguration"
     class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
 
+    <property name="idGenerator" ref="idGenerator" />
     <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
     <property name="jdbcDriver" value="org.h2.Driver" />
     <property name="jdbcUsername" value="sa" />

@@ -17,6 +17,8 @@ import java.util.List;
 
 
 /**
+ * 流程中的元素
+ * 例如：StarEvent、UserTask 等
  * @author Tijs Rademakers
  */
 public abstract class FlowElement extends BaseElement implements HasExecutionListeners {

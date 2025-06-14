@@ -24,6 +24,7 @@ import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * <process>解析</process>
  * @author Tijs Rademakers
  */
 public class ProcessParser implements BpmnXMLConstants {
@@ -52,6 +53,9 @@ public class ProcessParser implements BpmnXMLConstants {
 
       BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultProcessAttributes);
 
+      /**
+       * 在此处关联 process 和 bpmnModel
+       */
       model.getProcesses().add(process);
 
     }

@@ -101,7 +101,13 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 	public ProcessInstance startProcessInstanceByKeyAndTenantId(String processDefinitionKey, String businessKey, Map<String, Object> variables, String tenantId) {
 		return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(processDefinitionKey, null, businessKey, variables, tenantId));
 	}
-  
+
+  /**
+   * 执行流程
+   * @param processDefinitionId
+   *          the id of the process definition, cannot be null.
+   * @return
+   */
   public ProcessInstance startProcessInstanceById(String processDefinitionId) {
     return commandExecutor.execute(new StartProcessInstanceCmd<ProcessInstance>(null, processDefinitionId, null, null));
   }

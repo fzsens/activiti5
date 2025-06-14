@@ -13,6 +13,7 @@
 package org.activiti.bpmn.constants;
 
 /**
+ * 纯常量，设计为 interface，可以减少 import 挺好的设计
  * @author Tijs Rademakers
  */
 public interface BpmnXMLConstants {

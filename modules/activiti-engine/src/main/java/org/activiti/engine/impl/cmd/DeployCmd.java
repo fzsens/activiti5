@@ -50,9 +50,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
     	
-    	List<Deployment> existingDeployments = new ArrayList<Deployment>();
+      List<Deployment> existingDeployments = new ArrayList<Deployment>();
       if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
-      	DeploymentEntity existingDeployment = commandContext
+          // db 中读取已经部署的流程
+          DeploymentEntity existingDeployment = commandContext
      			 .getDeploymentEntityManager()
      			 .findLatestDeploymentByName(deployment.getName());
       	if (existingDeployment != null) {

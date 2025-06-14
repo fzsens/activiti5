@@ -36,6 +36,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * 默认添加，用于进行事件的监听和日志记录（数据库记录）
+ *
+ * 1. 每个 handler 产生对应的事件记录 entry
+ * 2. 最后通过同意的 database flusher 写入数据库，这是一个有效的优化方法
+ *
  * @author Joram Barrez
  */
 public class EventLogger implements ActivitiEventListener {
@@ -65,7 +70,7 @@ public class EventLogger implements ActivitiEventListener {
 	}
 
 	protected void initializeDefaultHandlers() {
-	  addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
+	    addEventHandler(ActivitiEventType.TASK_CREATED, TaskCreatedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_COMPLETED, TaskCompletedEventHandler.class);
 		addEventHandler(ActivitiEventType.TASK_ASSIGNED, TaskAssignedEventHandler.class);
 		
@@ -93,13 +98,18 @@ public class EventLogger implements ActivitiEventListener {
 			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 			
 			if (eventHandler != null && eventFlusher == null) {
-				
+
+				/**
+				 * flusher 不符合对扩展开放的原则
+				 */
 				eventFlusher = createEventFlusher();
 				if (eventFlusher == null) {
 					eventFlusher = new DatabaseEventFlusher(); // Default
 				}
 				currentCommandContext.addAttribute(EVENT_FLUSHER_KEY, eventFlusher);
-				
+				/*
+				 * 上下文关闭的时候，也需要进行写入
+				 */
 				currentCommandContext.addCloseListener(eventFlusher);
 				currentCommandContext
 				    .addCloseListener(new CommandContextCloseListener() {
@@ -108,6 +118,9 @@ public class EventLogger implements ActivitiEventListener {
 					    public void closing(CommandContext commandContext) {
 					    }
 
+						/**
+						 * Activiti 给予 CQRS 模式构建，当 context 的命令执行完毕之后，会调用 context 的 closing- closed 方法
+						 */
 					    @Override
 					    public void closed(CommandContext commandContext) {
 						    // For those who are interested: we can now broadcast the events were added
@@ -120,7 +133,11 @@ public class EventLogger implements ActivitiEventListener {
 					    
 				    });
 			}
-
+			/**
+			 * 存储到 flusher 中，这边的 eventHandler，并非一般事件处理器的无状态模式
+			 * 而是采用了一个 eventHandler 对应一个 event 的有状态模式，有状态模式的好处是什么呢？
+			 * 如果要借鉴这种模式，应该在什么场景下？
+			 */
 			eventFlusher.addEventHandler(eventHandler);
 		}
 	}

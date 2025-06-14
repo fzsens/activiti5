@@ -24,7 +24,13 @@ import org.activiti.engine.impl.el.ExpressionManager;
  * There is only one instance of this parser in the process engine.
  * This {@link Parser} creates {@link BpmnParse} instances that 
  * can be used to actually parse the BPMN 2.0 XML process definitions.
- * 
+ *
+ * 思考为什么需要这个近似于工厂类的实现呢？
+ * 1. 核心的作用是创建 BpmnParse
+ * 2. BpmnParser 被创建的位置是在 ProcessEngineConfiguration 中
+ * 3. 具体创建 BpmnParse 使用了一个工厂类 BpmnParseFactory，并且可以作为外部参数传递到 ProcessEngineConfiguration 中
+ * 4. 这样设计的好处，在于可扩展性，用户可以通过 BpmnParseFactory 来进行扩展，并且默认带有一系列的参数，这些参数被封装在BpmnParser中
+ *
  * @author Tom Baeyens
  * @author Joram Barrez
  */

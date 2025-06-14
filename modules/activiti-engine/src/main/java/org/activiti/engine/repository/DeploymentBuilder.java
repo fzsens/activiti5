@@ -29,11 +29,16 @@ import org.activiti.bpmn.model.BpmnModel;
  * After deploying, no more changes can be made to the returned deployment
  * and the builder instance can be disposed.
  *
+ * 部署构建器
+ *
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public interface DeploymentBuilder {
-  
+
+  /**
+   * 各类添加资源的方式
+   */
   DeploymentBuilder addInputStream(String resourceName, InputStream inputStream);
   DeploymentBuilder addClasspathResource(String resource);
   DeploymentBuilder addString(String resourceName, String text);
@@ -85,6 +90,7 @@ public interface DeploymentBuilder {
   DeploymentBuilder activateProcessDefinitionsOn(Date date);
 
   /**
+   * 核心方法
    * Deploys all provided sources to the Activiti engine.
    */
   Deployment deploy();

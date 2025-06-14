@@ -35,6 +35,8 @@ import org.activiti.engine.runtime.Job;
 
 
 /**
+ * EntityManager 实际上是多个 Entity 的组合管理器
+ *
  * @author Tom Baeyens
  * @author Joram Barrez
  */

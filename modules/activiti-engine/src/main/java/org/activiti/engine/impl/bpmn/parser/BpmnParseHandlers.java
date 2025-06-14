@@ -57,7 +57,12 @@ public class BpmnParseHandlers {
       handlers.add(bpmnParseHandler);
     }
   }
-  
+
+  /**
+   * 调用每一种类型的 BpmnParseHandler 来进行解析处理
+   * @param bpmnParse
+   * @param element
+   */
   public void parseElement(BpmnParse bpmnParse, BaseElement element) {
     
     if (element instanceof DataObject) {

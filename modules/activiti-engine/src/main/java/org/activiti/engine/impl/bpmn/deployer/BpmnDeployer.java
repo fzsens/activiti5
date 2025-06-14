@@ -78,6 +78,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
+ * 部署器
+ * 通过 RepositoryService -> DeloyCmd 进行调用 -> BpmnDeployer -> BpmnParse
  * @author Tom Baeyens
  * @author Joram Barrez
  */
@@ -92,10 +94,14 @@ public class BpmnDeployer implements Deployer {
   protected BpmnParser bpmnParser;
   protected IdGenerator idGenerator;
 
+  /**
+   * 默认情况下的部署方法
+   */
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
     log.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+    // db 中的资源实体
     Map<String, ResourceEntity> resources = deployment.getResources();
     Map<String, BpmnModel> bpmnModelMap = new HashMap<String, BpmnModel>();
 
@@ -107,7 +113,10 @@ public class BpmnDeployer implements Deployer {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        
+
+        /**
+         * 核心解析器
+         */
         BpmnParse bpmnParse = bpmnParser
           .createParse()
           .sourceInputStream(inputStream)

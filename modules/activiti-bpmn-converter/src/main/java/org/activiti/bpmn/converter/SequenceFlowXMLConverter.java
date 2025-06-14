@@ -49,6 +49,12 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     return sequenceFlow;
   }
 
+  /**
+   * @param element
+   * @param model
+   * @param xtw
+   * @throws Exception
+   */
   @Override
   protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     SequenceFlow sequenceFlow = (SequenceFlow) element;

@@ -25,6 +25,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
 /**
+ * 开始节点的 Operation
  * @author Tom Baeyens
  * @author Daniel Meyer
  */
